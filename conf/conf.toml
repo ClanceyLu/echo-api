@@ -1,0 +1,10 @@
+[app]
+  port = 1205
+  debug = true
+
+[db]
+  user = "root"
+  password = "rootroot"
+  host = "127.0.0.1:3306"
+  name = "test"
+  type = "mysql"

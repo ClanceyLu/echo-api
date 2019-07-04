@@ -1,0 +1,6 @@
+from centos
+
+WORKDIR .
+VOLUME .
+
+EXPOSE 9133

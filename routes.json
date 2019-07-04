@@ -1,0 +1,17 @@
+[
+  {
+    "method": "PUT",
+    "path": "/user/:id",
+    "name": "github.com/ClanceyLu/echo-api/routers/v1.UpdateUser"
+  },
+  {
+    "method": "GET",
+    "path": "/ping",
+    "name": "github.com/ClanceyLu/echo-api/routers.Init.func1"
+  },
+  {
+    "method": "POST",
+    "path": "/register",
+    "name": "github.com/ClanceyLu/echo-api/routers/v1.Register"
+  }
+]
