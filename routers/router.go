@@ -8,6 +8,7 @@ import (
 
 	"github.com/ClanceyLu/echo-api/conf"
 	"github.com/ClanceyLu/echo-api/custom"
+	middle "github.com/ClanceyLu/echo-api/middleware"
 	v1 "github.com/ClanceyLu/echo-api/routers/v1"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,6 +19,7 @@ func Init() *echo.Echo {
 	appConf := conf.Conf.Sub("app")
 	e := echo.New()
 	e.Debug = appConf.GetBool("debug")
+	e.Use(middle.CustomContext())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
@@ -28,7 +30,17 @@ func Init() *echo.Echo {
 
 	// e.HTTPErrorHandler = handler.Error
 
+	api := e.Group("/v1")
+	{
+		api.GET("/ping", func(c echo.Context) error {
+			return c.String(http.StatusOK, "pong")
+		})
+	}
+
 	e.GET("/ping", func(c echo.Context) error {
+		cc := c.(*custom.Context)
+		arr := cc.QueryArray("aa")
+		log.Print(arr)
 		return c.String(http.StatusOK, "pong")
 	})
 
