@@ -1,6 +1,8 @@
 [app]
   port = 1205
   debug = true
+  page = 1
+  pageSize = 10
 
 [db]
   user = "root"
