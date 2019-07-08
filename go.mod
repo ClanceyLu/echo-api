@@ -12,6 +12,7 @@ require (
 	github.com/labstack/echo/v4 v4.1.5
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/nsf/gocode v0.0.0-20190302080247-5bee97b48836 // indirect
+	github.com/pkg/errors v0.8.0
 	github.com/spf13/viper v1.4.0
 	golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
