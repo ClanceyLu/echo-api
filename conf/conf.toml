@@ -4,9 +4,8 @@
   page = 1
   pageSize = 10
 
-[db]
+[mysql]
   user = "root"
   password = "rootroot"
   host = "127.0.0.1:3306"
   name = "test"
-  type = "mysql"
