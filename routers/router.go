@@ -1,13 +1,9 @@
 package router
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ClanceyLu/echo-api/conf"
-	"github.com/ClanceyLu/echo-api/controller"
-	"github.com/ClanceyLu/echo-api/controller/admin"
-	"github.com/ClanceyLu/echo-api/controller/app"
 	"github.com/ClanceyLu/echo-api/custom"
 	middle "github.com/ClanceyLu/echo-api/middleware"
 	"github.com/labstack/echo/v4"
@@ -38,31 +34,10 @@ func Init() *echo.Echo {
 		})
 	}
 
-	e.GET("/ping", func(c echo.Context) error {
-		cc := c.(*custom.Context)
-		arr := cc.QueryArray("aa")
-		log.Print(arr)
-		page, pageSize := cc.PageInfo()
-		log.Printf("page %d, pageSize %d", page, pageSize)
-		return c.String(http.StatusOK, "pong")
-	})
-
-	uploadController := controller.NewUpload()
-	appRouter := v1.Group("/app")
-	{
-		appRouter.POST("/upload", uploadController.Upload)
-
-		userController := app.NewUser()
-		appRouter.GET("/user", userController.List)
-	}
-
-	adminRouter := v1.Group("/admin")
-	{
-		adminRouter.POST("/upload", uploadController.Upload)
-
-		userController := admin.NewUser()
-		adminRouter.GET("/user", userController.List)
-	}
+	// register app routers
+	appRouter(v1.Group("/app"))
+	// register admin routers
+	adminRouter(v1.Group("/admin"))
 
 	return e
 }
