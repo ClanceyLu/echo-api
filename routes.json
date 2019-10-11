@@ -18,5 +18,10 @@
     "method": "PUT",
     "path": "/user/:id",
     "name": "github.com/ClanceyLu/echo-api/routers/v1.UpdateUser"
+  },
+  {
+    "method": "GET",
+    "path": "/user/:id",
+    "name": "github.com/ClanceyLu/echo-api/routers/v1.GetUser"
   }
 ]

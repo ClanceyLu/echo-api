@@ -30,10 +30,14 @@ func (c *Context) QueryDefault(key, defalutValue string) string {
 // if page and pageSize not exists, it will return default value
 func (c *Context) PageInfo() (int, int) {
 	appConf := conf.Conf.Sub("app")
-	page, err := strconv.Atoi(c.QueryDefault("page", appConf.GetString("page")))
-	pageSize, err := strconv.Atoi(c.QueryDefault("pageSize", "10"))
+	defaultPage := appConf.GetInt("page")
+	defaultPageSize := appConf.GetInt("pageSize")
+	page, err := strconv.Atoi(
+		c.QueryDefault("page", strconv.Itoa(defaultPage)))
+	pageSize, err := strconv.Atoi(
+		c.QueryDefault("pageSize", strconv.Itoa(defaultPageSize)))
 	if err != nil {
-		return appConf.GetInt("page"), appConf.GetInt("pageSize")
+		return defaultPage, defaultPageSize
 	}
 	return page, pageSize
 }

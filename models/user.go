@@ -5,14 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 )
-
-func dbErr(err error) bool {
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
-		return true
-	}
-	return false
-}
 
 // User 用户表
 type User struct {
@@ -43,26 +37,42 @@ func (p *Profile) Scan(input interface{}) error {
 	return json.Unmarshal(input.([]byte), p)
 }
 
+// IUser is user model interface
+type IUser interface {
+	Add(u *User) error
+	Update(id uint, u *User) error
+	ExistByPhoneNo(phoneNo string) (bool, error)
+	ExistByID(ID uint) (bool, error)
+	GetDetail(query interface{}) (*User, error)
+}
+
+type userModel struct{}
+
+// NewUserModel return IUser
+func NewUserModel() IUser {
+	return &userModel{}
+}
+
 func (u *User) save(tx *gorm.DB) error {
 	return tx.Save(u).Error
 }
 
-// AddUser 新增用户
-func AddUser(u *User) error {
+// Add 新增用户
+func (um *userModel) Add(u *User) error {
 	return u.save(db)
 }
 
-// UpdateUser 更新用户
-func UpdateUser(id uint, u *User) error {
+// Update 更新用户
+func (um *userModel) Update(id uint, u *User) error {
 	return db.
 		Model(&User{}).
 		Where("id = ?", id).
-		Update(u).
+		Updates(u).
 		Error
 }
 
-// ExistUserByPhoneNo 用户手机是否已经注册过
-func ExistUserByPhoneNo(phoneNo string) (bool, error) {
+// ExistByPhoneNo 用户手机是否已经注册过
+func (um *userModel) ExistByPhoneNo(phoneNo string) (bool, error) {
 	var u User
 	if err := db.
 		Select("id").
@@ -75,4 +85,32 @@ func ExistUserByPhoneNo(phoneNo string) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+// ExistByID 用户手机是否已经注册过
+func (um *userModel) ExistByID(ID uint) (bool, error) {
+	var u User
+	if err := db.
+		Select("id").
+		Where("id = ?", ID).
+		First(&u).
+		Error; dbErr(err) {
+		return false, err
+	}
+	if u.ID > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+// GetDetail 根据查询条件返回用户详情
+func (um *userModel) GetDetail(query interface{}) (*User, error) {
+	var u User
+	if err := db.
+		Where(query).
+		First(&u).
+		Error; err != nil {
+		return nil, errors.Wrapf(err, "user %+v not found", query)
+	}
+	return &u, nil
 }

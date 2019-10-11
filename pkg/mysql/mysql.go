@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ClanceyLu/echo-api/conf"
 	"github.com/jinzhu/gorm"
@@ -23,7 +24,7 @@ func Connect() *gorm.DB {
 	db, err := gorm.Open("mysql",
 		fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 			user, password, host, name))
-	defer db.Close()
+	defer closeDB(db)
 	if err != nil {
 		panic(err)
 	}
@@ -31,4 +32,11 @@ func Connect() *gorm.DB {
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 	return db
+}
+
+func closeDB(db *gorm.DB) {
+	err := db.Close()
+	if err != nil {
+		log.Printf("close mysql error: %s", err)
+	}
 }

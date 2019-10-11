@@ -20,3 +20,10 @@ var db *gorm.DB
 func init() {
 	db = mysql.Connect()
 }
+
+func dbErr(err error) bool {
+	if err != nil && !gorm.IsRecordNotFoundError(err) {
+		return true
+	}
+	return false
+}

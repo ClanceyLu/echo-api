@@ -1,15 +1,15 @@
 package router
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/ClanceyLu/echo-api/conf"
+	"github.com/ClanceyLu/echo-api/controller"
+	"github.com/ClanceyLu/echo-api/controller/admin"
+	"github.com/ClanceyLu/echo-api/controller/app"
 	"github.com/ClanceyLu/echo-api/custom"
 	middle "github.com/ClanceyLu/echo-api/middleware"
-	v1 "github.com/ClanceyLu/echo-api/routers/v1"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -28,11 +28,12 @@ func Init() *echo.Echo {
 	// 自定义 Bind
 	e.Binder = &custom.Binder{}
 
-	// e.HTTPErrorHandler = handler.Error
+	// custom errorHandler
+	e.HTTPErrorHandler = custom.Error
 
-	api := e.Group("/v1")
+	v1 := e.Group("/v1")
 	{
-		api.GET("/ping", func(c echo.Context) error {
+		v1.GET("/ping", func(c echo.Context) error {
 			return c.String(http.StatusOK, "pong")
 		})
 	}
@@ -41,19 +42,27 @@ func Init() *echo.Echo {
 		cc := c.(*custom.Context)
 		arr := cc.QueryArray("aa")
 		log.Print(arr)
+		page, pageSize := cc.PageInfo()
+		log.Printf("page %d, pageSize %d", page, pageSize)
 		return c.String(http.StatusOK, "pong")
 	})
 
-	e.POST("/register", v1.Register)
+	uploadController := controller.NewUpload()
+	appRouter := v1.Group("/app")
+	{
+		appRouter.POST("/upload", uploadController.Upload)
 
-	e.PUT("/user/:id", v1.UpdateUser)
-
-	// save router info to file
-	data, err := json.MarshalIndent(e.Routes(), "", "  ")
-	if err != nil {
-		log.Panic(err)
+		userController := app.NewUser()
+		appRouter.GET("/user", userController.List)
 	}
-	_ = ioutil.WriteFile("routes.json", data, 0644)
+
+	adminRouter := v1.Group("/admin")
+	{
+		adminRouter.POST("/upload", uploadController.Upload)
+
+		userController := admin.NewUser()
+		adminRouter.GET("/user", userController.List)
+	}
 
 	return e
 }
