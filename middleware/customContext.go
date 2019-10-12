@@ -10,7 +10,9 @@ import (
 func CustomContext() func(h echo.HandlerFunc) echo.HandlerFunc {
 	return func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &custom.Context{c}
+			cc := &custom.Context{
+				Context: c,
+			}
 			return h(cc)
 		}
 	}
