@@ -26,7 +26,11 @@ func Error(err error, c echo.Context) {
 		status = http.StatusUnprocessableEntity
 	} else if he, ok := err.(*echo.HTTPError); ok {
 		status = he.Code
-		msg = http.StatusText(status)
+		if he.Message != nil {
+			msg = he.Message.(string)
+		} else {
+			msg = http.StatusText(status)
+		}
 	} else {
 		msg = http.StatusText(status)
 	}
