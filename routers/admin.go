@@ -12,4 +12,5 @@ func adminRouter(r *echo.Group) {
 
 	userController := admin.NewUser()
 	r.GET("/user", userController.List)
+	r.POST("/user", userController.Add)
 }
