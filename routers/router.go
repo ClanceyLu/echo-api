@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ClanceyLu/echo-api/conf"
+	"github.com/ClanceyLu/echo-api/controller"
 	"github.com/ClanceyLu/echo-api/custom"
 	middle "github.com/ClanceyLu/echo-api/middleware"
 	"github.com/labstack/echo/v4"
@@ -33,6 +34,9 @@ func Init() *echo.Echo {
 			return c.String(http.StatusOK, "pong")
 		})
 	}
+
+	upload := controller.NewUpload()
+	v1.POST("/upload", upload.Upload)
 
 	// register app routers
 	appRouter(v1.Group("/app"))
