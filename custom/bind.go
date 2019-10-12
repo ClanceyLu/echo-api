@@ -1,6 +1,8 @@
 package custom
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+)
 
 // Binder custom binder
 type Binder struct{}
@@ -13,7 +15,7 @@ func (binder *Binder) Bind(i interface{}, c echo.Context) error {
 	}
 	// 验证
 	if err := c.Validate(i); err != nil {
-		return echo.NewHTTPError(422, err.Error()).SetInternal(err)
+		return err
 	}
 	return nil
 }

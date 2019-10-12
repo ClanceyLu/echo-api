@@ -4,15 +4,16 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
 // HTTPError 自定义 http error
 type HTTPError struct {
-	Code int    `json:"-"`
-	Err  error  `json:"err,omitempty"`
-	Msg  string `json:"msg"`
+	Status int    `json:"-"`
+	Err    error  `json:"err,omitempty"`
+	Msg    string `json:"msg"`
 }
 
 func (he *HTTPError) Error() string {
@@ -26,55 +27,50 @@ func (he *HTTPError) SetErr(err error) *HTTPError {
 }
 
 // NewHTTPError 新建自定义HttpError
-func NewHTTPError(code int, msg string) *HTTPError {
+func NewHTTPError(status int, msg string) *HTTPError {
 	return &HTTPError{
-		Code: code,
-		Msg:  msg,
-	}
-}
-
-// NewParamError 新建参数错误
-func NewParamError(err error) *HTTPError {
-	return &HTTPError{
-		422,
-		err,
-		err.Error(),
+		Status: status,
+		Msg:    msg,
 	}
 }
 
 // Error echo 错误集中处理
 func Error(err error, c echo.Context) {
 	var (
-		code = http.StatusInternalServerError
-		msg  = http.StatusText(code)
+		status = http.StatusInternalServerError
+		msg    = http.StatusText(status)
 	)
 	log.Printf("catch err %+v", err)
 	if err == gorm.ErrRecordNotFound {
 		// mysql not found resource, return 404
-		code = http.StatusNotFound
-		msg = http.StatusText(code)
+		status = http.StatusNotFound
+		msg = http.StatusText(status)
+	} else if e, ok := err.(govalidator.Error); ok {
+		log.Print("catch validate err")
+		msg = e.Error()
+		status = http.StatusUnprocessableEntity
 	} else if he, ok := err.(*HTTPError); ok {
 		msg = he.Msg
 		log.Printf("HTTPError %+v", err)
-		code = he.Code
+		status = he.Status
 	} else if he, ok := err.(*echo.HTTPError); ok {
-		code = he.Code
-		msg = http.StatusText(code)
+		status = he.Code
+		msg = http.StatusText(status)
 	} else {
-		msg = http.StatusText(code)
+		msg = http.StatusText(status)
 	}
 	if !c.Response().Committed {
 		r := Response{
 			C:    c,
 			Err:  err,
 			Msg:  msg,
-			Code: 1,
+			Code: 10001,
 		}
 		// not show error to front end if app is not debug mode
 		if !c.Echo().Debug {
 			r.Err = nil
 		}
-		err := r.C.JSON(code, r)
+		err := r.C.JSON(status, r)
 		if err != nil {
 			c.Logger().Error(err)
 		}

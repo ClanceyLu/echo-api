@@ -2,8 +2,6 @@ package custom
 
 // import "gopkg.in/go-playground/validator.v9"
 import (
-	"fmt"
-
 	"github.com/asaskevich/govalidator"
 )
 
@@ -12,9 +10,13 @@ type Validator struct{}
 
 // Validate implementing echo validate interface
 func (v *Validator) Validate(i interface{}) error {
-	_, err := govalidator.ValidateStruct(i)
-	if errs, ok := err.(govalidator.Errors); ok {
-		return fmt.Errorf("%s", errs[0])
+	ok, err := govalidator.ValidateStruct(i)
+	if ok {
+		return nil
+	}
+	if e, ok := err.(govalidator.Errors); ok {
+		errors := e.Errors()
+		return errors[0]
 	}
 	return err
 }
