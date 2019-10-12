@@ -9,31 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// HTTPError 自定义 http error
-type HTTPError struct {
-	Status int    `json:"-"`
-	Err    error  `json:"err,omitempty"`
-	Msg    string `json:"msg"`
-}
-
-func (he *HTTPError) Error() string {
-	return he.Msg
-}
-
-// SetErr set err to Err
-func (he *HTTPError) SetErr(err error) *HTTPError {
-	he.Err = err
-	return he
-}
-
-// NewHTTPError 新建自定义HttpError
-func NewHTTPError(status int, msg string) *HTTPError {
-	return &HTTPError{
-		Status: status,
-		Msg:    msg,
-	}
-}
-
 // Error echo 错误集中处理
 func Error(err error, c echo.Context) {
 	var (
@@ -49,10 +24,6 @@ func Error(err error, c echo.Context) {
 		log.Print("catch validate err")
 		msg = e.Error()
 		status = http.StatusUnprocessableEntity
-	} else if he, ok := err.(*HTTPError); ok {
-		msg = he.Msg
-		log.Printf("HTTPError %+v", err)
-		status = he.Status
 	} else if he, ok := err.(*echo.HTTPError); ok {
 		status = he.Code
 		msg = http.StatusText(status)
