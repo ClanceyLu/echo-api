@@ -14,7 +14,7 @@ import (
 func (u uploadService) upload(c echo.Context) error {
 	ip := c.RealIP()
 	key := fmt.Sprintf("upload-%s", ip)
-	redisClient := redis.Connect()
+	redisClient := u.redisClient
 	times, err := redisClient.Get(key).Result()
 	log.Printf("times %s", times)
 	if err == redis.Nil {

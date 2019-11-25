@@ -7,6 +7,7 @@ import (
 	"github.com/ClanceyLu/echo-api/custom"
 	middle "github.com/ClanceyLu/echo-api/middleware"
 	"github.com/ClanceyLu/echo-api/pkg/mysql"
+	"github.com/ClanceyLu/echo-api/pkg/redis"
 	"github.com/ClanceyLu/echo-api/service/app"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -37,9 +38,10 @@ func Init() *echo.Echo {
 	}
 
 	db := mysql.Connect()
+	redisClient := redis.Connect()
 
 	// register app routers
-	app := app.New(db)
+	app := app.New(db, redisClient)
 	app.Router(v1)
 
 	return e

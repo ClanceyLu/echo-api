@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/ClanceyLu/echo-api/service"
+	"github.com/go-redis/redis/v7"
 
 	"github.com/ClanceyLu/echo-api/service/app/upload"
 	"github.com/ClanceyLu/echo-api/service/app/user"
@@ -10,12 +11,13 @@ import (
 )
 
 type app struct {
-	db *gorm.DB
+	db          *gorm.DB
+	redisClient *redis.Client
 }
 
 // New 新建一个 app 服务
-func New(db *gorm.DB) service.Service {
-	return &app{db}
+func New(db *gorm.DB, redisClient *redis.Client) service.Service {
+	return &app{db, redisClient}
 }
 
 // Router 注册 app 路由
@@ -25,6 +27,6 @@ func (app *app) Router(r *echo.Group) {
 	user := user.New(app.db)
 	user.Router(appRouter)
 
-	upload := upload.New()
+	upload := upload.New(app.redisClient)
 	upload.Router(appRouter)
 }

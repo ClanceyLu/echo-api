@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ClanceyLu/echo-api/conf"
-	router "github.com/ClanceyLu/echo-api/routers"
+	"github.com/ClanceyLu/echo-api/router"
 )
 
 func main() {
