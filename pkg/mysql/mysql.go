@@ -24,7 +24,7 @@ func Connect() *gorm.DB {
 	db, err := gorm.Open("mysql",
 		fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 			user, password, host, name))
-	defer closeDB(db)
+	// defer closeDB(db)
 	if err != nil {
 		panic(err)
 	}

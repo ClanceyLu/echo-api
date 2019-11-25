@@ -10,7 +10,12 @@
   host = "127.0.0.1:3306"
   name = "test"
 
+[[mongo]]
+  host = "127.0.0.1:27017"
+
 [redis]
+  user = "root"
+  password = "rootroot"
   host = "127.0.0.1:6379"
 
 [auth]

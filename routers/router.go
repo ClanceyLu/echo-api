@@ -4,9 +4,10 @@ import (
 	"net/http"
 
 	"github.com/ClanceyLu/echo-api/conf"
-	"github.com/ClanceyLu/echo-api/controller"
 	"github.com/ClanceyLu/echo-api/custom"
 	middle "github.com/ClanceyLu/echo-api/middleware"
+	"github.com/ClanceyLu/echo-api/pkg/mysql"
+	"github.com/ClanceyLu/echo-api/service/app"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -35,13 +36,11 @@ func Init() *echo.Echo {
 		})
 	}
 
-	upload := controller.NewUpload()
-	v1.POST("/upload", upload.Upload)
+	db := mysql.Connect()
 
 	// register app routers
-	appRouter(v1.Group("/app"))
-	// register admin routers
-	adminRouter(v1.Group("/admin"))
+	app := app.New(db)
+	app.Router(v1)
 
 	return e
 }
