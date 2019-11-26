@@ -10,9 +10,9 @@ type listQuery struct {
 	Where    map[string]interface{}
 }
 
-func (u *userService) queryUsers(query *listQuery) (*[]model.User, int, error) {
+func (u user) queryUsers(query *listQuery) (*[]model.User, int, error) {
 	var users []model.User
-	db := u.db
+	db := u.Mysql
 	db = db.Model(&model.User{}).
 		Select("id, nick_name, phone_no, email")
 	db = db.Where(query.Where)
@@ -30,8 +30,8 @@ func (u *userService) queryUsers(query *listQuery) (*[]model.User, int, error) {
 	return &users, count, nil
 }
 
-func (u *userService) queryUserByID(id uint) (*model.User, error) {
-	db := u.db
+func (u user) queryUserByID(id uint) (*model.User, error) {
+	db := u.Mysql
 	user := &model.User{}
 	if err := db.
 		Select("id, nick_name, user, phone_no, email, sex, profile").
@@ -43,9 +43,9 @@ func (u *userService) queryUserByID(id uint) (*model.User, error) {
 }
 
 // 判断手机号是否注册过
-func (u *userService) existByPhoneNo(phoneNo string) (bool, error) {
+func (u user) existByPhoneNo(phoneNo string) (bool, error) {
 	user := &model.User{}
-	if err := u.db.
+	if err := u.Mysql.
 		Select("id").
 		Where("phone_no = ?", phoneNo).
 		First(u).

@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (u *userService) getUser(c echo.Context) error {
+func (u user) GetUser(c echo.Context) error {
 	user, err := u.queryUserByID(1)
 	if err != nil {
 		return err
@@ -17,7 +17,7 @@ func (u *userService) getUser(c echo.Context) error {
 	})
 }
 
-func (u *userService) getUsers(c echo.Context) error {
+func (u user) GetUsers(c echo.Context) error {
 	query := listQuery{
 		Page:     1,
 		PageSize: 10,

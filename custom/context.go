@@ -17,7 +17,8 @@ func (c *Context) QueryArray(key string) []string {
 	return c.QueryParams()[key]
 }
 
-// QueryDefault returns the query param for the key if it exists, otherwise it returns defalutValue
+// QueryDefault returns the query param for the key if it exists,
+// otherwise it returns defalutValue
 func (c *Context) QueryDefault(key, defalutValue string) string {
 	val := c.QueryParam(key)
 	if val == "" {

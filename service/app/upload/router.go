@@ -7,7 +7,7 @@ import (
 )
 
 type uploadService struct {
-	redisClient *redis.Client
+	redis *redis.Client
 }
 
 // New 返回一个 upload 服务
