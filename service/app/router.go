@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/ClanceyLu/echo-api/service"
+	"github.com/ClanceyLu/echo-api/service/app/post"
 	"github.com/ClanceyLu/echo-api/service/app/upload"
 	"github.com/ClanceyLu/echo-api/service/app/user"
 
@@ -46,6 +47,12 @@ func (app *app) Router(r *echo.Group) {
 		 * }
 		 */
 		appRouter.GET("/user/:id", user.GetUser)
+	}
+
+	{
+		post := post.New(service.Controller(*app))
+		appRouter.POST("/post", post.PostPost)
+		appRouter.GET("/post", post.GetPosts)
 	}
 
 	upload := upload.New(app.Redis)

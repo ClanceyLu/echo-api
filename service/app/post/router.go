@@ -3,17 +3,17 @@ package post
 import (
 	"github.com/ClanceyLu/echo-api/service"
 	"github.com/labstack/echo/v4"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type postService struct {
-	mongo *mongo.Client
+type post struct {
+	service.Controller
 }
 
-func New(mongo *mongo.Client) service.Service {
-	return &postService{mongo}
+type Post interface {
+	PostPost(echo.Context) error
+	GetPosts(echo.Context) error
 }
 
-func (p postService) Router(r *echo.Group) {
-	r.POST("/post", p.postPost)
+func New(app service.Controller) Post {
+	return &post{app}
 }
