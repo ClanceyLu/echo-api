@@ -1,8 +1,0 @@
-* Echo-API
-** Orm
-** Conf
-** TODO Docker [0/2]
-   - [ ] Dockerfile
-   - [ ] docker-compose
-** RBAC
-** Message Queue
