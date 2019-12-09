@@ -9,12 +9,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-struct app {}
+type app struct{}
 
 // New 新建一个 app 服务
 func New() service.Service {
-	var app app = app()
-	return &app
+	return &app{}
 }
 
 // Router 注册 app 路由
@@ -22,7 +21,7 @@ func (app *app) Router(r *echo.Group) {
 	appRouter := r.Group("/app")
 
 	{
-		user := user.New(service.Controller(*app))
+		user := user.New()
 		/**
 		 * @api {get} /app/user 用户列表
 		 * @apiName GetUsers
@@ -50,11 +49,11 @@ func (app *app) Router(r *echo.Group) {
 	}
 
 	{
-		post := post.New(service.Controller(*app))
+		post := post.New()
 		appRouter.POST("/post", post.PostPost)
 		appRouter.GET("/post", post.GetPosts)
 	}
 
-	upload := upload.New(app.Redis)
+	upload := upload.New()
 	upload.Router(appRouter)
 }
