@@ -11,6 +11,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// Client mongo 实例
+type Client = *m.Client
+
+type mongo struct {
+	Client   *m.Client
+	Database *m.Database
+}
+
 // Connect 连接 mongodb 并且返回 mongo.Client
 func Connect() *m.Client {
 	var (

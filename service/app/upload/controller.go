@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"github.com/ClanceyLu/echo-api/pkg/redis"
+	"github.com/ClanceyLu/echo-api/service"
 	"github.com/labstack/echo/v4"
 )
 
 func (u uploadService) upload(c echo.Context) error {
 	ip := c.RealIP()
 	key := fmt.Sprintf("upload-%s", ip)
-	redisClient := u.redis
+	redisClient := service.Redis
 	times, err := redisClient.Get(key).Result()
 	log.Printf("times %s", times)
 	if err == redis.Nil {

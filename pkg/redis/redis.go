@@ -5,11 +5,14 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
+// Client redis 实例
+type Client = *redis.Client
+
 // Nil 没有找到
 const Nil = redis.Nil
 
 // Connect 返回 redis 连接实例
-func Connect() *redis.Client {
+func Connect() Client {
 	var (
 		redisConf = conf.Conf.Sub("redis")
 		host      = redisConf.GetString("host")

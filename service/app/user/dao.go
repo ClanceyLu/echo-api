@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/ClanceyLu/echo-api/model"
+	"github.com/ClanceyLu/echo-api/service"
 )
 
 type listQuery struct {
@@ -12,7 +13,7 @@ type listQuery struct {
 
 func (u user) queryUsers(query *listQuery) (*[]model.User, int, error) {
 	var users []model.User
-	db := u.Mysql
+	db := service.Mysql
 	db = db.Model(&model.User{}).
 		Select("id, nick_name, phone_no, email")
 	db = db.Where(query.Where)
@@ -31,7 +32,7 @@ func (u user) queryUsers(query *listQuery) (*[]model.User, int, error) {
 }
 
 func (u user) queryUserByID(id uint) (*model.User, error) {
-	db := u.Mysql
+	db := service.Mysql
 	user := &model.User{}
 	if err := db.
 		Select("id, nick_name, user, phone_no, email, sex, profile").
@@ -45,7 +46,7 @@ func (u user) queryUserByID(id uint) (*model.User, error) {
 // 判断手机号是否注册过
 func (u user) existByPhoneNo(phoneNo string) (bool, error) {
 	user := &model.User{}
-	if err := u.Mysql.
+	if err := service.Mysql.
 		Select("id").
 		Where("phone_no = ?", phoneNo).
 		First(u).

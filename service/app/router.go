@@ -9,11 +9,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type app service.Controller
+struct app {}
 
 // New 新建一个 app 服务
-func New(server *service.Controller) service.Service {
-	var app app = app(*server)
+func New() service.Service {
+	var app app = app()
 	return &app
 }
 

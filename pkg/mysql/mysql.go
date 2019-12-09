@@ -10,8 +10,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// Client mysql 实例
+type Client = *gorm.DB
+
 // Connect 连接数据库，返回 gorm.DB
-func Connect() *gorm.DB {
+func Connect() Client {
 	var (
 		appConf   = conf.Conf.Sub("app")
 		mySQLConf = conf.Conf.Sub("mysql")

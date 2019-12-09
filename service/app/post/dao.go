@@ -4,13 +4,14 @@ import (
 	"context"
 
 	"github.com/ClanceyLu/echo-api/model"
+	"github.com/ClanceyLu/echo-api/service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (p post) insertPost(post *model.Post) (interface{}, error) {
 	// ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	mongo := p.Mongo
+	mongo := service.Mongo
 	collection := mongo.Database("echo-api").Collection("posts")
 	res, err := collection.InsertOne(context.TODO(), post)
 	if err != nil {
@@ -20,7 +21,7 @@ func (p post) insertPost(post *model.Post) (interface{}, error) {
 }
 
 func (p post) findPosts() (*[]*model.Post, error) {
-	mongo := p.Mongo
+	mongo := service.Mongo
 	collection := mongo.Database("echo-api").Collection("posts")
 	var list []*model.Post
 	findOptions := options.Find()
