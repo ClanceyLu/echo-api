@@ -6,12 +6,15 @@ import (
 	"time"
 
 	"github.com/ClanceyLu/echo-api/conf"
+	"github.com/ClanceyLu/echo-api/pkg/logger"
 	"github.com/ClanceyLu/echo-api/router"
 )
 
 func main() {
 	// appConf app 基本配置
 	appConf := conf.Conf.Sub("app")
+
+	logger.Init()
 
 	e := router.Init()
 	s := &http.Server{
